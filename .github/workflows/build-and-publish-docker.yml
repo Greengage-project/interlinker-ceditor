@@ -1,12 +1,11 @@
 name: build-and-publish-docker
 
 on:
-
   workflow_dispatch:
 
   push:
     tags:
-      - '*'
+      - "*"
 
     branches:
       - master
@@ -35,10 +34,10 @@ jobs:
           file: ceditor/Dockerfile
           push: true
           tags: |
-            interlinkproject/interlinker-ceditor:ceditor.${{ github.ref_name }}
-            interlinkproject/interlinker-ceditor:ceditor.${{ github.ref_name }}.${{ steps.date.outputs.date }}
-          cache-from: type=registry,ref=interlinkproject/interlinker-ceditor:ceditor-buildcache
-          cache-to: type=registry,ref=interlinkproject/interlinker-ceditor:ceditor-buildcache,mode=max
+            projectgreengage/interlinker-ceditor:ceditor.${{ github.ref_name }}
+            projectgreengage/interlinker-ceditor:ceditor.${{ github.ref_name }}.${{ steps.date.outputs.date }}
+          cache-from: type=registry,ref=projectgreengage/interlinker-ceditor:ceditor-buildcache
+          cache-to: type=registry,ref=projectgreengage/interlinker-ceditor:ceditor-buildcache,mode=max
       - name: Build and push Docker Image Etherpad
         id: docker_build_etherpad
         uses: docker/build-push-action@v2
@@ -47,10 +46,10 @@ jobs:
           file: etherpad/Dockerfile
           push: true
           tags: |
-            interlinkproject/interlinker-ceditor:etherpad.${{ github.ref_name }}
-            interlinkproject/interlinker-ceditor:etherpad.${{ github.ref_name }}.${{ github.ref_name }}
-          cache-from: type=registry,ref=interlinkproject/interlinker-ceditor:etherpad-buildcache
-          cache-to: type=registry,ref=interlinkproject/interlinker-ceditor:etherpad-buildcache,mode=max
+            projectgreengage/interlinker-ceditor:etherpad.${{ github.ref_name }}
+            projectgreengage/interlinker-ceditor:etherpad.${{ github.ref_name }}.${{ github.ref_name }}
+          cache-from: type=registry,ref=projectgreengage/interlinker-ceditor:etherpad-buildcache
+          cache-to: type=registry,ref=projectgreengage/interlinker-ceditor:etherpad-buildcache,mode=max
       - name: Trigger Dev Deployment
         uses: octokit/request-action@v2.x
         id: trigger_dev_deployment
