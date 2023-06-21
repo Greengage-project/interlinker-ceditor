@@ -59,4 +59,4 @@ jobs:
           repo: interlink-project
           event_type: update-dev-environment
         env:
-          GITHUB_TOKEN: ${{ secrets.INTERLINK_PROJECT_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GREENGAGE_PROJECT_GITHUB_TOKEN }}
