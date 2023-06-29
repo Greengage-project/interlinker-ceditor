@@ -1,21 +1,25 @@
 import jwt
+import os
+import requests
+from base64 import b64decode
+from cryptography.hazmat.primitives import serialization
 from fastapi import Depends, HTTPException, Request
 from jwt import PyJWKClient
 
-url = "https://aac.platform.smartcommunitylab.it/jwk"
+url = os.getenv("KEYCLOAK_URL_REALM")
+client_id = os.getenv("KEYCLOAK_CLIENT_ID")
+
 jwks_client = PyJWKClient(url)
 
 def decode_token(jwtoken):
-    signing_key = jwks_client.get_signing_key_from_jwt(jwtoken)
-    data = jwt.decode(
-        jwtoken,
-        signing_key.key,
-        algorithms=["RS256"],
-        audience="c_0e0822df-9df8-48d6-b4d9-c542a4623f1b",
-        # options={"verify_nbf": False},
-    )
-    return data
-
+    keycloak_realm = requests.get(url)
+    keycloak_realm.raise_for_status()
+    key_der_base64 = keycloak_realm.json()["public_key"]
+    key_der = b64decode(key_der_base64.encode())
+    public_key = serialization.load_der_public_key(key_der)
+    payload = jwt.decode(jwtoken, public_key, algorithms=["RS256"], 
+                         audience=client_id)
+    return payload
 
 def get_token_in_cookie(request):
     try:

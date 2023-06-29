@@ -1,12 +1,13 @@
 version: "3.7"
 services:
   ceditor:
-    image: 'ceditordev'
+    image: "ceditordev"
     container_name: ceditor-integrated
     volumes:
       - ./ceditor:/app
     env_file:
       - .env
+      - .secrets
     environment:
       - PROTOCOL=http://
       - SERVER_NAME=${DOMAIN?Variable not set}
@@ -26,11 +27,12 @@ services:
       - traefik.http.middlewares.ceditor-stripprefix.stripprefix.prefixes=/ceditor
     networks:
       - traefik-public
-      - default
     logging:
       driver: "json-file"
       options:
         tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+    extra_hosts:
+      - "auth1.localhost:172.17.0.1"
 
   etherpad:
     container_name: etherpad-integrated
@@ -57,7 +59,6 @@ services:
       - traefik.http.middlewares.etherpad-stripprefix.stripprefix.prefixes=/etherpad
     networks:
       - traefik-public
-      - default
     logging:
       driver: "json-file"
       options:
